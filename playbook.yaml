@@ -1,0 +1,8 @@
+- name: Configure wireguard
+  hosts: wireguard
+  remote_user: root
+  vars_files: 
+    - vars.yaml
+
+  tasks:
+    - import_tasks: 2001-wireguard/playbook.yaml
