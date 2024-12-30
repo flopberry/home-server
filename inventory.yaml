@@ -1,0 +1,7 @@
+wireguard:
+  hosts:
+    "2001":
+      ansible_port: 22
+      ansible_host: 192.168.1.201
+      ansible_user: root
+      ansible_ssh_private_key_file: "2001-wireguard/private_key"
