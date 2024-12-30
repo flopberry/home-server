@@ -1,7 +1,9 @@
-wireguard:
+plugin: jinja_yaml
+varfile: vars.yaml 
+ungrouped:
   hosts:
-    "2001":
+    "2001-wireguard":
       ansible_port: 22
-      ansible_host: 192.168.1.201
+      ansible_host: "{{ wireguard.ip }}"
       ansible_user: root
       ansible_ssh_private_key_file: "2001-wireguard/private_key"
