@@ -13,8 +13,8 @@ Then copy token to your vers file
 **Configure vars file:**
 
 ```
-cp credentials.auto.tfvars.example credentials.auto.tfvars
-vim credentials.auto.tfvars
+cp vars.yaml.example vars.yaml
+vim vars.yaml
 ```
 And edit your variable to finish setup
 
@@ -25,5 +25,5 @@ And edit your variable to finish setup
 terraform init  # initialize terraform and install plugins
 terraform plan  # to see what changes will be
 terraform apply  # to deploy VMs. Then type yes to confirm
-ansible-playbook -i inventory.yaml playbook.yaml  # To configure VMs
+ansible-playbook playbook.yaml  # To configure VMs
 ```
