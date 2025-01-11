@@ -1,0 +1,27 @@
+plugin: community.general.proxmox
+user: "ansible@pve"
+url: "https://0.0.0.0:8006"
+token_id: ansible 
+token_secret: "" 
+want_facts: true
+ 
+validate_certs: no
+compose:
+   ansible_host: |  
+     [(
+       proxmox_agent_interfaces 
+       | default([]) 
+       | items2dict(key_name="mac-address", value_name="ip-addresses")
+       | default(
+         proxmox_lxc_interfaces 
+         | default([]) 
+         | selectattr('inet', 'defined') 
+         | items2dict(key_name="hwaddr", value_name="inet"),
+          true
+       )
+     ).get(
+       proxmox_net0.get("virtio", proxmox_net0.get("hwaddr", "")).lower()
+     ) | ansible.utils.ipv4("address")] 
+     | flatten 
+     | first
+

@@ -38,10 +38,14 @@
 
 - name: Copy docker compose file
   template:
-    src: docker-compose.yaml
+    src: files/docker-compose.yaml
     dest: ~/wireguard/docker-compose.yaml
 
 - name: Run docker compose
   community.docker.docker_compose_v2:
     project_src: ~/wireguard 
     state: present
+
+- name: Remainder
+  debug:
+    msg: "Make sure that configured router to redirect {{ public_ip }}:{{ wireguard.port }} port to {{ hostvars['wireguard']['ansible_host'] }}:{{ wireguard.port }}"

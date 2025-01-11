@@ -1,11 +1,19 @@
-proxmox:
-  api_url: "https://192.168.1.1:8006/api2/json"
-  api_token_id: "terraform@pve!terraform"
-  api_token_secret: ""
+public_ip: 0.0.0.0 
 
-lxc_default_password: "admin"
-public_ip: "0.0.0.0"
-password_hash: ""
+proxmox:
+  api_host: "0.0.0.0"
+  api_port: 8006
+  api_user: "ansible@pve"
+  api_token_id: "ansible" 
+  api_token_secret: ""
+  storage_name: "local-zfs"
 
 wireguard:
-  ip: 192.168.1.201
+  lang: en
+  port: 51820
+  ui_port: 80 
+  allowed_ips: 0.0.0.0/24
+  default_dns: 0.0.0.0 
+  password: password
+  chart_type: 2
+

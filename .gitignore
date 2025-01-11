@@ -1,5 +1,5 @@
-terraform.tfstate*
-.terraform*
-credentials.auto.tfvars
+__pycache__
 vars.yaml
-private_key
+keys/*
+proxmox.yaml
+

@@ -1,0 +1,27 @@
+services:
+  wg-easy:
+    image: ghcr.io/wg-easy/wg-easy
+    container_name: wg-easy
+    environment:
+       - LANG={{ wireguard.lang }}
+       - WG_HOST={{ public_ip }}
+       - PASSWORD_HASH={{ wireguard.password | password_hash('blowfish', (inventory_hostname | hash('sha256'))[:22], ident='2a') }}
+       - PORT={{ wireguard.ui_port }}
+       - WG_PORT={{ wireguard.port }}
+       - WG_ALLOWED_IPS={{ wireguard.allowed_ips }}
+       - WG_DEFAULT_DNS={{ wireguard.default_dns }}
+       - UI_CHART_TYPE={{ wireguard.chart_type }}
+       - ENABLE_PROMETHEUS_METRICS=true
+    volumes:
+        - ~/.wg-easy:/etc/wireguard
+    ports:
+        - {{ wireguard.ui_port }}:{{ wireguard.ui_port }}/tcp
+        - {{ wireguard.port }}:{{ wireguard.port }}/udp
+    cap_add:
+        - NET_ADMIN
+        - SYS_MODULE
+    sysctls:
+        - net.ipv4.conf.all.src_valid_mark=1
+        - net.ipv4.ip_forward=1
+    restart: unless-stopped
+

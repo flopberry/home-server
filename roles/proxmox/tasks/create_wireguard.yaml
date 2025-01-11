@@ -1,0 +1,68 @@
+- name: Generate an OpenSSL private key 
+  community.crypto.openssl_privatekey:
+    path: keys/wireguard
+    type: RSA 
+    size: 4096
+    mode: 0600
+  register: private_key
+
+- name: Generate an OpenSSL public key 
+  community.crypto.openssl_publickey:
+    path: keys/wireguard.pub
+    format: OpenSSH
+    privatekey_path: keys/wireguard
+    return_content: true
+  register: openssl_key
+
+- name: Download template
+  community.general.proxmox_template:
+    template: ubuntu-24.04-standard_24.04-2_amd64.tar.zst 
+
+- name: Create wireguard lxc container
+  community.general.proxmox:
+    vmid: 2001
+    hostname: wireguard
+    disk: "{{ proxmox.storage_name }}:1" 
+    password: "{{ wireguard.password }}"
+    pubkey: "{{ openssl_key.publickey }}"
+    ostemplate: "local:vztmpl/ubuntu-24.04-standard_24.04-2_amd64.tar.zst"
+    state: present 
+
+- name: Configure wireguard lxc container
+  community.general.proxmox:
+    vmid: 2001
+    hostname: wireguard
+    update: true
+    disk: "{{ proxmox.storage_name }}:1"
+    password: "{{ wireguard.password }}"
+    pubkey: "{{ openssl_key.publickey }}"
+    state: present 
+    cores: 1
+    cpus: 1
+    memory: 1024 
+    swap: 0
+    features:
+     - nesting=1
+    netif:
+      net0: "name=eth0,ip=dhcp,bridge=vmbr0"
+  register: wireguard_configuration
+
+- name: Start wireguard lxc container
+  community.general.proxmox:
+    vmid: 2001
+    hostname: wireguard
+    state: started
+  register: wireguard_started
+
+- name: Wait for container start
+  pause:
+    seconds: 5
+
+- meta: refresh_inventory
+
+- name: Waiting for online wireguard
+  wait_for:
+    host: "{{ hostvars['wireguard']['ansible_host'] }}"
+    port: 22
+    timeout: 120 
+

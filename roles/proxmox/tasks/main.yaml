@@ -1,0 +1,3 @@
+- name: Include proxmox create 
+  import_tasks: create_wireguard.yaml
+

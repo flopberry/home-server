@@ -1,8 +1,29 @@
-- name: Configure wireguard
-  hosts: wireguard
-  remote_user: root
-  vars_files: 
-    - vars.yaml
+- hosts: localhost
+  gather_facts: False
+  vars_files:
+    - vars.yaml 
+  module_defaults:
+    community.general.proxmox:
+      api_user: "{{ proxmox.api_user }}"
+      api_token_id: "{{ proxmox.api_token_id }}"
+      api_token_secret: "{{ proxmox.api_token_secret }}"
+      api_host: "{{ proxmox.api_host }}"
+      api_port: "{{ proxmox.api_port }}"
+      node: pve
+    community.general.proxmox_template:
+      api_user: "{{ proxmox.api_user }}"
+      api_token_id: "{{ proxmox.api_token_id }}"
+      api_token_secret: "{{ proxmox.api_token_secret }}"
+      api_host: "{{ proxmox.api_host }}"
+      api_port: "{{ proxmox.api_port }}"
+      node: pve
 
-  tasks:
-    - import_tasks: 2001-wireguard/playbook.yaml
+  roles:
+    - proxmox
+
+- hosts: wireguard
+  vars_files:
+    - vars.yaml
+  roles:
+    - wireguard
+
